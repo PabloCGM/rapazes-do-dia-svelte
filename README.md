@@ -30,7 +30,8 @@ A página inicial mostra se a API está no ar e quantos projetos e tarefas ela d
 
 | Arquivo | O que tem |
 | --- | --- |
-| `db.json` | Dados da API local (`projetos` e `tarefas`) |
+| `db.json` | Dados da API local (`projetos` e `tarefas`), do guia da Aula 09 |
+| `db.seed.json` | Cópia intacta do `db.json`, para voltar aos dados originais |
 | `src/tipos.ts` | Contrato da disciplina: `Status`, `Prioridade`, `Projeto`, `Tarefa`, `NovaTarefa` |
 | `src/lib/api.ts` | Funções `fetch` tipadas para a API |
 | `src/routes/` | Páginas do SvelteKit |
@@ -45,7 +46,13 @@ A página inicial mostra se a API está no ar e quantos projetos e tarefas ela d
 | `POST /tarefas` | Devolve a tarefa com `id` gerado |
 | `GET /tarefas/999` | 404 |
 
-Cada `POST`, `PUT`, `PATCH` e `DELETE` grava direto no `db.json`.
+Cada `POST`, `PUT`, `PATCH` e `DELETE` grava direto no `db.json`. Para voltar aos dados originais:
+
+```sh
+cp db.seed.json db.json
+```
+
+O contrato (`db.json` e `src/tipos.ts`) é o mesmo para a turma inteira: não renomeiem campos nem alterem os ids.
 
 ## Outros comandos
 
