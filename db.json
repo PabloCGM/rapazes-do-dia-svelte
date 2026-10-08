@@ -1,0 +1,70 @@
+{
+  "projetos": [
+    {
+      "id": "1",
+      "nome": "Gerenciador de Tarefas",
+      "descricao": "Aplicação de projetos e tarefas da equipe Rapazes do Dia",
+      "disciplina": "Desenvolvimento Frontend",
+      "criadoEm": "2026-09-30"
+    },
+    {
+      "id": "2",
+      "nome": "Trabalho de Banco de Dados",
+      "descricao": "Modelagem e consultas do trabalho final",
+      "disciplina": "Banco de Dados",
+      "criadoEm": "2026-09-15"
+    }
+  ],
+  "tarefas": [
+    {
+      "id": "1",
+      "projetoId": "1",
+      "titulo": "Criar o projeto Svelte com TypeScript",
+      "descricao": "Estruturar o projeto com npx sv create",
+      "status": "concluida",
+      "prioridade": "alta",
+      "responsavel": "Pablo Caldeira",
+      "prazo": "2026-10-06"
+    },
+    {
+      "id": "2",
+      "projetoId": "1",
+      "titulo": "Escrever db.json e src/tipos.ts",
+      "descricao": "Contrato de dados da disciplina",
+      "status": "em-revisao",
+      "prioridade": "alta",
+      "responsavel": "Gabriel Freire",
+      "prazo": "2026-10-06"
+    },
+    {
+      "id": "3",
+      "projetoId": "1",
+      "titulo": "Montar o quadro no GitHub Projects",
+      "descricao": "Colunas A fazer, Em andamento, Em revisão e Concluída",
+      "status": "em-andamento",
+      "prioridade": "media",
+      "responsavel": "Yuri Soares",
+      "prazo": "2026-10-07"
+    },
+    {
+      "id": "4",
+      "projetoId": "1",
+      "titulo": "Listar tarefas vindas da API",
+      "descricao": "Entrega do Marco 2, com rotas funcionando",
+      "status": "a-fazer",
+      "prioridade": "media",
+      "responsavel": "Márcio Ribeiro",
+      "prazo": "2026-10-14"
+    },
+    {
+      "id": "5",
+      "projetoId": "2",
+      "titulo": "Desenhar o diagrama ER",
+      "descricao": "Entidades e relacionamentos do sistema",
+      "status": "a-fazer",
+      "prioridade": "baixa",
+      "responsavel": "Pablo Caldeira",
+      "prazo": "2026-10-20"
+    }
+  ]
+}
