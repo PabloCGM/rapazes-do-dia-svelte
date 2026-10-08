@@ -7,9 +7,9 @@ Projeto em equipe da disciplina de Desenvolvimento Frontend (ULBRA, 2026.2), com
 
 ## Integrantes
 
-- Pablo Caldeira
-- Gabriel Freire
-- Yuri Soares
+- Pablo Caldeira Gomes Monteiro
+- Gabriel Messias Freire Garrido 
+- Yuri Soares de Oliveira
 - Márcio Ribeiro
 
 ## Como rodar
