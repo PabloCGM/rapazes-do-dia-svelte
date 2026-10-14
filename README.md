@@ -24,7 +24,7 @@ npx json-server db.json   # API em http://localhost:3000 (em outro terminal)
 
 `npm run api` é um atalho para o mesmo comando do json-server.
 
-A página inicial mostra se a API está no ar e quantos projetos e tarefas ela devolve.
+Rotas do app: `/` (lista de tarefas), `/tarefas/:id` (detalhe), `/projetos` e `/projetos/:id` (projeto com suas tarefas). Endereços inexistentes mostram a tela de página não encontrada.
 
 ## Estrutura
 
@@ -33,7 +33,9 @@ A página inicial mostra se a API está no ar e quantos projetos e tarefas ela d
 | `db.json` | Dados da API local (`projetos` e `tarefas`), do guia da Aula 09 |
 | `db.seed.json` | Cópia intacta do `db.json`, para voltar aos dados originais |
 | `src/tipos.ts` | Contrato da disciplina: `Status`, `Prioridade`, `Projeto`, `Tarefa`, `NovaTarefa` |
-| `src/lib/api.ts` | Funções `fetch` tipadas para a API |
+| `src/lib/api.ts` | Funções `fetch` tipadas para a API (leitura de tarefas e projetos) |
+| `src/lib/componentes/CartaoTarefa.svelte` | Cartão com título, status, prioridade, responsável e prazo |
+| `src/lib/rotulos.ts` | Rótulos de status/prioridade e formatação de data |
 | `src/routes/` | Páginas do SvelteKit |
 
 ## Rotas da API
