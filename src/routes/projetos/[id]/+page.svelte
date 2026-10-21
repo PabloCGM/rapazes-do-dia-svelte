@@ -24,6 +24,7 @@
 	</dl>
 
 	<h2>Tarefas do projeto ({projeto.tarefas.length})</h2>
+	<p><a href={`${resolve('/tarefas/nova')}?projetoId=${encodeURIComponent(projeto.id)}`}>Nova tarefa neste projeto</a></p>
 	{#if projeto.tarefas.length === 0}
 		<p>Este projeto ainda não tem tarefas.</p>
 	{:else}

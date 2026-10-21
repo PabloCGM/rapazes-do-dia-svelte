@@ -24,7 +24,9 @@ npx json-server db.json   # API em http://localhost:3000 (em outro terminal)
 
 `npm run api` é um atalho para o mesmo comando do json-server.
 
-Rotas do app: `/` (lista de tarefas), `/tarefas/:id` (detalhe), `/projetos` e `/projetos/:id` (projeto com suas tarefas). Endereços inexistentes mostram a tela de página não encontrada.
+Rotas do app: `/` (lista de tarefas), `/tarefas/nova` (cadastro), `/tarefas/:id` (detalhe), `/tarefas/:id/editar` (edição), `/projetos` e `/projetos/:id` (projeto com suas tarefas). Endereços inexistentes mostram a tela de página não encontrada.
+
+Use **Nova tarefa** na lista ou **Nova tarefa neste projeto** na página de um projeto. Nesse segundo caso, `/tarefas/nova?projetoId=2`, por exemplo, já seleciona o projeto correspondente. O cadastro grava na API e retorna à lista atualizada. Use **Editar tarefa** no detalhe para carregar os dados atuais; salvar retorna ao detalhe atualizado e cancelar descarta as alterações do formulário. A API precisa estar rodando para carregar e salvar os dados.
 
 ## Estrutura
 
@@ -33,7 +35,8 @@ Rotas do app: `/` (lista de tarefas), `/tarefas/:id` (detalhe), `/projetos` e `/
 | `db.json` | Dados da API local (`projetos` e `tarefas`), do guia da Aula 09 |
 | `db.seed.json` | Cópia intacta do `db.json`, para voltar aos dados originais |
 | `src/tipos.ts` | Contrato da disciplina: `Status`, `Prioridade`, `Projeto`, `Tarefa`, `NovaTarefa` |
-| `src/lib/api.ts` | Funções `fetch` tipadas para a API (leitura de tarefas e projetos) |
+| `src/lib/api.ts` | Funções `fetch` tipadas para leitura de tarefas e projetos e gravação de tarefas |
+| `src/lib/componentes/FormularioTarefa.svelte` | Formulário compartilhado de cadastro e edição, com estado de salvamento e mensagem de erro |
 | `src/lib/componentes/CartaoTarefa.svelte` | Cartão com título, status, prioridade, responsável e prazo |
 | `src/lib/rotulos.ts` | Rótulos de status/prioridade e formatação de data |
 | `src/routes/` | Páginas do SvelteKit |
@@ -46,6 +49,7 @@ Rotas do app: `/` (lista de tarefas), `/tarefas/:id` (detalhe), `/projetos` e `/
 | `GET /tarefas?_sort=-prazo` | Ordena; o `-` inverte |
 | `GET /projetos/1?_embed=tarefas` | Projeto com as tarefas dentro |
 | `POST /tarefas` | Devolve a tarefa com `id` gerado |
+| `PATCH /tarefas/:id` | Salva os campos editados sem substituir o identificador |
 | `GET /tarefas/999` | 404 |
 
 Cada `POST`, `PUT`, `PATCH` e `DELETE` grava direto no `db.json`. Para voltar aos dados originais:

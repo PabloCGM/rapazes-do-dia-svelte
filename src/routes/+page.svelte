@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import CartaoTarefa from '#lib/componentes/CartaoTarefa.svelte';
 	import type { PageProps } from './$types';
 
@@ -16,7 +17,10 @@
 		<h1>Lista de tarefas</h1>
 		<p class="introducao">Acompanhe as tarefas, seus responsáveis, prazos e prioridades.</p>
 	</div>
-	<p class="contador">{data.tarefas.length} {data.tarefas.length === 1 ? 'tarefa' : 'tarefas'}</p>
+	<div class="acoes">
+		<p class="contador">{data.tarefas.length} {data.tarefas.length === 1 ? 'tarefa' : 'tarefas'}</p>
+		<a class="nova-tarefa" href={resolve('/tarefas/nova')}>Nova tarefa</a>
+	</div>
 </header>
 
 {#if data.tarefas.length === 0}
@@ -33,6 +37,9 @@
 {/if}
 
 <style>
+	.acoes { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; }
+	.nova-tarefa { flex-shrink: 0; padding: .65rem 1rem; border-radius: .5rem; background: #2563eb; color: #fff; font-weight: 650; text-decoration: none; }
+	.nova-tarefa:hover { background: #1d4ed8; }
 	.cabecalho { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem; }
 	.sobretitulo { margin: 0 0 .5rem; color: #2563eb; font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
 	h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.04em; }

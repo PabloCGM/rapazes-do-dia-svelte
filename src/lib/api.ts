@@ -1,4 +1,4 @@
-import type { Projeto, Tarefa } from '../tipos';
+import type { NovaTarefa, Projeto, Tarefa } from '../tipos';
 
 export const API = 'http://localhost:3000';
 
@@ -30,4 +30,22 @@ export async function listarTarefas(f: Fetch = fetch): Promise<Tarefa[]> {
 
 export async function buscarTarefa(id: string, f: Fetch = fetch): Promise<Tarefa | null> {
 	return obter<Tarefa>(`/tarefas/${encodeURIComponent(id)}`, f);
+}
+
+async function gravarTarefa(caminho: string, metodo: 'POST' | 'PATCH', dados: NovaTarefa, f: Fetch): Promise<Tarefa> {
+	const resposta = await f(`${API}${caminho}`, {
+		method: metodo,
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(dados)
+	});
+	if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+	return resposta.json() as Promise<Tarefa>;
+}
+
+export function criarTarefa(dados: NovaTarefa, f: Fetch = fetch): Promise<Tarefa> {
+	return gravarTarefa('/tarefas', 'POST', dados, f);
+}
+
+export function atualizarTarefa(id: string, dados: NovaTarefa, f: Fetch = fetch): Promise<Tarefa> {
+	return gravarTarefa(`/tarefas/${encodeURIComponent(id)}`, 'PATCH', dados, f);
 }
