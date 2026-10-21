@@ -19,6 +19,7 @@
 		<span class="status status-{tarefa.status}">{rotuloStatus[tarefa.status]}</span>
 	</div>
 	<h1>{tarefa.titulo}</h1>
+	<p><a class="editar" href={resolve('/tarefas/[id]/editar', { id: tarefa.id })}>Editar tarefa</a></p>
 	<p class="descricao">{tarefa.descricao || 'Esta tarefa não possui descrição.'}</p>
 
 	<dl class="metadados">
@@ -34,6 +35,7 @@
 	.detalhe { max-width: 48rem; margin: 0 auto; padding: clamp(1.25rem, 4vw, 2.5rem); border: 1px solid #e2e8f0; border-radius: 1.25rem; background: #fff; box-shadow: 0 8px 30px rgb(15 23 42 / 6%); }
 	.voltar { display: inline-block; margin-bottom: 2rem; color: #2563eb; font-weight: 650; text-decoration: none; }
 	.voltar:hover { text-decoration: underline; }
+	.editar { color: #2563eb; font-weight: 650; }
 	.linha-superior { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 	.sobretitulo { margin: 0; color: #64748b; font-size: .8rem; font-weight: 750; letter-spacing: .1em; }
 	h1 { margin: .7rem 0; color: #0f172a; font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.2; overflow-wrap: anywhere; }
