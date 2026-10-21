@@ -11,18 +11,36 @@
 		textoSalvar: string;
 	} = $props();
 
+	type CampoObrigatorio = 'titulo' | 'projetoId';
+
 	let dados = $state(untrack(() => ({ ...inicial })));
 	let salvando = $state(false);
 	let erro = $state('');
+	let tentouEnviar = $state(false);
 	const status = Object.entries(rotuloStatus) as [Status, string][];
 	const prioridades = Object.entries(rotuloPrioridade) as [Prioridade, string][];
+
+	/** Mensagem de cada campo inválido; só aparece depois da primeira tentativa de envio. */
+	const erros = $derived.by(() => {
+		const lista: Partial<Record<CampoObrigatorio, string>> = {};
+		if (!dados.titulo.trim()) lista.titulo = 'Informe o título da tarefa.';
+		else if (dados.titulo.trim().length > 120) lista.titulo = 'Use no máximo 120 caracteres no título.';
+		if (!projetos.some((projeto) => projeto.id === dados.projetoId)) lista.projetoId = 'Selecione o projeto da tarefa.';
+		return lista;
+	});
+	const visiveis = $derived(tentouEnviar ? erros : {});
+	const quantidadeErros = $derived(Object.keys(visiveis).length);
+
+	const idCampo: Record<CampoObrigatorio, string> = { titulo: 'titulo', projetoId: 'projeto' };
 
 	async function enviar(evento: SubmitEvent) {
 		evento.preventDefault();
 		if (salvando) return;
 		erro = '';
-		if (!dados.titulo.trim() || !projetos.some((projeto) => projeto.id === dados.projetoId)) {
-			erro = 'Informe um título e selecione um projeto válido.';
+		tentouEnviar = true;
+		const primeiro = (Object.keys(erros) as CampoObrigatorio[])[0];
+		if (primeiro) {
+			document.getElementById(idCampo[primeiro])?.focus();
 			return;
 		}
 		salvando = true;
@@ -36,28 +54,37 @@
 	}
 </script>
 
-<form onsubmit={enviar} aria-busy={salvando}>
-	<p class="orientacao">Os campos com * são obrigatórios.</p>
+<form onsubmit={enviar} aria-busy={salvando} novalidate>
+	<p class="orientacao">Os campos com <abbr title="obrigatório">*</abbr> são obrigatórios.</p>
 	{#if projetos.length === 0}
 		<p class="mensagem" role="alert">É necessário ter um projeto cadastrado para salvar uma tarefa.</p>
 	{/if}
-	{#if erro}
-		<p class="mensagem" role="alert">{erro}</p>
-	{/if}
+	<div role="alert">
+		{#if quantidadeErros > 0}
+			<p class="mensagem"><strong>Erro:</strong> corrija {quantidadeErros === 1 ? 'o campo indicado' : `os ${quantidadeErros} campos indicados`} antes de salvar.</p>
+		{:else if erro}
+			<p class="mensagem"><strong>Erro:</strong> {erro}</p>
+		{/if}
+	</div>
+	<p class="sr-only" role="status">{salvando ? 'Salvando a tarefa…' : ''}</p>
 	<fieldset disabled={salvando}>
 		<legend class="sr-only">Dados da tarefa</legend>
-		<div class="campo">
+		<div class="campo" class:invalido={visiveis.titulo}>
 			<label for="titulo">Título *</label>
-			<input id="titulo" name="titulo" bind:value={dados.titulo} required />
+			<input id="titulo" name="titulo" bind:value={dados.titulo} required maxlength="120" autocomplete="off"
+				aria-invalid={visiveis.titulo ? 'true' : undefined} aria-describedby={visiveis.titulo ? 'titulo-erro' : undefined} />
+			{#if visiveis.titulo}<p id="titulo-erro" class="erro-campo"><span aria-hidden="true">⚠</span> {visiveis.titulo}</p>{/if}
 		</div>
-		<div class="campo">
+		<div class="campo" class:invalido={visiveis.projetoId}>
 			<label for="projeto">Projeto *</label>
-			<select id="projeto" name="projetoId" bind:value={dados.projetoId} required>
+			<select id="projeto" name="projetoId" bind:value={dados.projetoId} required
+				aria-invalid={visiveis.projetoId ? 'true' : undefined} aria-describedby={visiveis.projetoId ? 'projeto-erro' : undefined}>
 				<option value="" disabled>Selecione um projeto</option>
 				{#each projetos as projeto (projeto.id)}
 					<option value={projeto.id}>{projeto.nome}</option>
 				{/each}
 			</select>
+			{#if visiveis.projetoId}<p id="projeto-erro" class="erro-campo"><span aria-hidden="true">⚠</span> {visiveis.projetoId}</p>{/if}
 		</div>
 		<div class="campo">
 			<label for="descricao">Descrição</label>
@@ -107,7 +134,10 @@
 	button:disabled, fieldset:disabled button { opacity: .65; cursor: wait; }
 	a { color: #2563eb; }
 	input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
-	.mensagem { padding: 1rem; border: 1px solid #fecaca; border-radius: .5rem; background: #fef2f2; color: #991b1b; line-height: 1.5; }
+	.mensagem { padding: 1rem; border: 1px solid #fecaca; border-left-width: .35rem; border-radius: .5rem; background: #fef2f2; color: #991b1b; line-height: 1.5; }
+	.invalido input, .invalido select { border: 2px solid #b91c1c; }
+	.erro-campo { margin: 0; color: #991b1b; font-size: .9rem; font-weight: 600; }
+	abbr { text-decoration: none; }
 	.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 	@media (max-width: 36rem) { .colunas { grid-template-columns: 1fr; } }
 </style>

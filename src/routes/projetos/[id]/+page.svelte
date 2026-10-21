@@ -17,6 +17,7 @@
 
 {#if projeto}
 	<h1>{projeto.nome}</h1>
+	<p><a class="editar" href={resolve('/projetos/[id]/editar', { id: projeto.id })}>Editar projeto</a></p>
 	<p class="descricao">{projeto.descricao}</p>
 	<dl class="dados">
 		<div><dt>Disciplina</dt><dd>{projeto.disciplina}</dd></div>
@@ -64,6 +65,10 @@
 	}
 	.descricao {
 		line-height: 1.6;
+	}
+	.editar {
+		color: #2563eb;
+		font-weight: 650;
 	}
 	.grade {
 		list-style: none;

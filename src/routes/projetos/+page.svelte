@@ -13,6 +13,7 @@
 
 <h1>Projetos</h1>
 <p>Escolha um projeto para consultar seus dados e acompanhar suas tarefas.</p>
+<p><a class="novo-projeto" href={resolve('/projetos/novo')}>Novo projeto</a></p>
 
 {#if data.erro}
 	<div class="mensagem erro" role="alert">
@@ -58,6 +59,19 @@
 	.meta {
 		color: #52525b;
 		font-size: 0.9rem;
+	}
+	.novo-projeto {
+		display: inline-block;
+		margin: 0.5rem 0 1rem;
+		padding: 0.65rem 1rem;
+		border-radius: 0.5rem;
+		background: #2563eb;
+		color: #fff;
+		font-weight: 650;
+		text-decoration: none;
+	}
+	.novo-projeto:hover {
+		background: #1d4ed8;
 	}
 	.mensagem {
 		padding: 1rem;

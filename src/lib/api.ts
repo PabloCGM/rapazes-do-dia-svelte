@@ -32,20 +32,32 @@ export async function buscarTarefa(id: string, f: Fetch = fetch): Promise<Tarefa
 	return obter<Tarefa>(`/tarefas/${encodeURIComponent(id)}`, f);
 }
 
-async function gravarTarefa(caminho: string, metodo: 'POST' | 'PATCH', dados: NovaTarefa, f: Fetch): Promise<Tarefa> {
+/** Dados de um projeto sem o `id` gerado pela API. */
+export type NovoProjeto = Omit<Projeto, 'id'>;
+
+/** Envia um POST ou PATCH com JSON; lança erro se a API não aceitar. */
+async function gravar<T>(caminho: string, metodo: 'POST' | 'PATCH', dados: unknown, f: Fetch): Promise<T> {
 	const resposta = await f(`${API}${caminho}`, {
 		method: metodo,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(dados)
 	});
 	if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
-	return resposta.json() as Promise<Tarefa>;
+	return resposta.json() as Promise<T>;
 }
 
 export function criarTarefa(dados: NovaTarefa, f: Fetch = fetch): Promise<Tarefa> {
-	return gravarTarefa('/tarefas', 'POST', dados, f);
+	return gravar<Tarefa>('/tarefas', 'POST', dados, f);
 }
 
-export function atualizarTarefa(id: string, dados: NovaTarefa, f: Fetch = fetch): Promise<Tarefa> {
-	return gravarTarefa(`/tarefas/${encodeURIComponent(id)}`, 'PATCH', dados, f);
+export function atualizarTarefa(id: string, dados: Partial<NovaTarefa>, f: Fetch = fetch): Promise<Tarefa> {
+	return gravar<Tarefa>(`/tarefas/${encodeURIComponent(id)}`, 'PATCH', dados, f);
+}
+
+export function criarProjeto(dados: NovoProjeto, f: Fetch = fetch): Promise<Projeto> {
+	return gravar<Projeto>('/projetos', 'POST', dados, f);
+}
+
+export function atualizarProjeto(id: string, dados: Partial<NovoProjeto>, f: Fetch = fetch): Promise<Projeto> {
+	return gravar<Projeto>(`/projetos/${encodeURIComponent(id)}`, 'PATCH', dados, f);
 }
