@@ -7,9 +7,10 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	const inicial: NovaTarefa = $derived({
+	type InicialTarefa = Omit<NovaTarefa, 'prioridade'> & { prioridade: '' };
+	const inicial: InicialTarefa = $derived({
 		projetoId: data.projetoId, titulo: '', descricao: '', status: 'a-fazer',
-		prioridade: 'media', responsavel: '', prazo: ''
+		prioridade: '', responsavel: '', prazo: ''
 	});
 
 	async function salvar(dados: NovaTarefa) {

@@ -3,17 +3,19 @@
 	import { rotuloPrioridade, rotuloStatus } from '#lib/rotulos.ts';
 	import type { NovaTarefa, Prioridade, Projeto, Status } from '../../tipos';
 
+	type DadosFormulario = Omit<NovaTarefa, 'prioridade'> & { prioridade: Prioridade | '' };
+
 	let { inicial, projetos, salvar, cancelarHref, textoSalvar }: {
-		inicial: NovaTarefa;
+		inicial: DadosFormulario;
 		projetos: Projeto[];
 		salvar: (dados: NovaTarefa) => Promise<void>;
 		cancelarHref: string;
 		textoSalvar: string;
 	} = $props();
 
-	type CampoObrigatorio = 'titulo' | 'projetoId';
+	type CampoObrigatorio = 'titulo' | 'projetoId' | 'prioridade';
 
-	let dados = $state(untrack(() => ({ ...inicial })));
+	let dados: DadosFormulario = $state(untrack(() => ({ ...inicial })));
 	let salvando = $state(false);
 	let erro = $state('');
 	let tentouEnviar = $state(false);
@@ -26,12 +28,13 @@
 		if (!dados.titulo.trim()) lista.titulo = 'Informe o título da tarefa.';
 		else if (dados.titulo.trim().length > 120) lista.titulo = 'Use no máximo 120 caracteres no título.';
 		if (!projetos.some((projeto) => projeto.id === dados.projetoId)) lista.projetoId = 'Selecione o projeto da tarefa.';
+		if (!dados.prioridade) lista.prioridade = 'Selecione a prioridade da tarefa.';
 		return lista;
 	});
 	const visiveis = $derived(tentouEnviar ? erros : {});
 	const quantidadeErros = $derived(Object.keys(visiveis).length);
 
-	const idCampo: Record<CampoObrigatorio, string> = { titulo: 'titulo', projetoId: 'projeto' };
+	const idCampo: Record<CampoObrigatorio, string> = { titulo: 'titulo', projetoId: 'projeto', prioridade: 'prioridade' };
 
 	async function enviar(evento: SubmitEvent) {
 		evento.preventDefault();
@@ -43,9 +46,11 @@
 			document.getElementById(idCampo[primeiro])?.focus();
 			return;
 		}
+		const prioridade = dados.prioridade;
+		if (!prioridade) return;
 		salvando = true;
 		try {
-			await salvar({ ...dados, titulo: dados.titulo.trim(), descricao: dados.descricao.trim(), responsavel: dados.responsavel.trim() });
+			await salvar({ ...dados, prioridade, titulo: dados.titulo.trim(), descricao: dados.descricao.trim(), responsavel: dados.responsavel.trim() });
 		} catch {
 			erro = 'Não foi possível salvar a tarefa. Confira se a API está disponível e tente novamente.';
 		} finally {
@@ -97,11 +102,14 @@
 					{#each status as [valor, rotulo]}<option value={valor}>{rotulo}</option>{/each}
 				</select>
 			</div>
-			<div class="campo">
-				<label for="prioridade">Prioridade</label>
-				<select id="prioridade" name="prioridade" bind:value={dados.prioridade}>
+			<div class="campo" class:invalido={visiveis.prioridade}>
+				<label for="prioridade">Prioridade *</label>
+				<select id="prioridade" name="prioridade" bind:value={dados.prioridade} required
+					aria-invalid={visiveis.prioridade ? 'true' : undefined} aria-describedby={visiveis.prioridade ? 'prioridade-erro' : undefined}>
+					<option value="" disabled>Selecione uma prioridade</option>
 					{#each prioridades as [valor, rotulo]}<option value={valor}>{rotulo}</option>{/each}
 				</select>
+				{#if visiveis.prioridade}<p id="prioridade-erro" class="erro-campo"><span aria-hidden="true">⚠</span> {visiveis.prioridade}</p>{/if}
 			</div>
 			<div class="campo">
 				<label for="responsavel">Responsável</label>

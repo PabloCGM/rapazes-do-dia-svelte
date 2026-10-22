@@ -46,8 +46,14 @@ async function gravar<T>(caminho: string, metodo: 'POST' | 'PATCH', dados: unkno
 	return resposta.json() as Promise<T>;
 }
 
-export function criarTarefa(dados: NovaTarefa, f: Fetch = fetch): Promise<Tarefa> {
-	return gravar<Tarefa>('/tarefas', 'POST', dados, f);
+/** Cria a tarefa com o próximo ID numérico disponível na coleção local. */
+export async function criarTarefa(dados: NovaTarefa, f: Fetch = fetch): Promise<Tarefa> {
+	const tarefas = await listarTarefas(f);
+	const maiorId = tarefas.reduce((maior, tarefa) => {
+		const id = Number(tarefa.id);
+		return Number.isSafeInteger(id) && id > maior ? id : maior;
+	}, 0);
+	return gravar<Tarefa>('/tarefas', 'POST', { ...dados, id: String(maiorId + 1) }, f);
 }
 
 export function atualizarTarefa(id: string, dados: Partial<NovaTarefa>, f: Fetch = fetch): Promise<Tarefa> {
