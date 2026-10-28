@@ -24,6 +24,8 @@ npx json-server db.json   # API em http://localhost:3000 (em outro terminal)
 
 `npm run api` é um atalho para o mesmo comando do json-server.
 
+Na lista principal, **Buscar por título** filtra enquanto você digita, sem diferenciar maiúsculas ou acentos e ignorando espaços nas extremidades. Os seletores de **Status** e **Prioridade** se combinam entre si e com a busca: uma tarefa só aparece quando atende aos três critérios. A contagem acompanha os resultados, e **Limpar filtros** restaura a lista completa. A filtragem acontece na interface, sem alterar os dados da API.
+
 Rotas do app: `/` (lista de tarefas), `/tarefas/nova` (cadastro), `/tarefas/:id` (detalhe), `/tarefas/:id/editar` (edição), `/projetos`, `/projetos/novo` (cadastro), `/projetos/:id` (projeto com suas tarefas) e `/projetos/:id/editar` (edição). Endereços inexistentes mostram a tela de página não encontrada.
 
 Use **Nova tarefa** na lista ou **Nova tarefa neste projeto** na página de um projeto. Nesse segundo caso, `/tarefas/nova?projetoId=2`, por exemplo, já seleciona o projeto correspondente. O cadastro grava na API e retorna à lista atualizada. Use **Editar tarefa** no detalhe para carregar os dados atuais; salvar retorna ao detalhe atualizado e cancelar descarta as alterações do formulário. Projetos seguem o mesmo fluxo: **Novo projeto** na lista de projetos e **Editar projeto** na página de cada um.
