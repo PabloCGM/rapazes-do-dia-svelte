@@ -7,6 +7,7 @@
 	let { children }: LayoutProps = $props();
 
 	const emTarefas = $derived(page.url.pathname === '/' || page.url.pathname.startsWith('/tarefas'));
+	const emQuadro = $derived(page.url.pathname.startsWith('/quadro'));
 	const emProjetos = $derived(page.url.pathname.startsWith('/projetos'));
 </script>
 
@@ -18,6 +19,7 @@
 	<a class="marca" href={resolve('/')}>Rapazes do Dia</a>
 	<nav aria-label="Principal">
 		<a href={resolve('/')} aria-current={emTarefas ? 'page' : undefined}>Tarefas</a>
+		<a href={resolve('/quadro')} aria-current={emQuadro ? 'page' : undefined}>Quadro</a>
 		<a href={resolve('/projetos')} aria-current={emProjetos ? 'page' : undefined}>Projetos</a>
 	</nav>
 </header>

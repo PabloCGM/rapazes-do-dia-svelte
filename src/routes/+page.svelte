@@ -2,10 +2,11 @@
 	import { resolve } from '$app/paths';
 	import CartaoTarefa from '#lib/componentes/CartaoTarefa.svelte';
 	import { rotuloPrioridade, rotuloStatus } from '#lib/rotulos.ts';
-	import type { Prioridade, Status } from '../tipos';
+	import type { Prioridade, Status, Tarefa } from '../tipos';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+	let tarefas = $state(data.tarefas);
 	let busca = $state('');
 	let status = $state<Status | ''>('');
 	let prioridade = $state<Prioridade | ''>('');
@@ -16,11 +17,15 @@
 
 	const termo = $derived(normalizar(busca.trim()));
 	const filtrosAtivos = $derived(termo !== '' || status !== '' || prioridade !== '');
-	const tarefasFiltradas = $derived(data.tarefas.filter((tarefa) =>
+	const tarefasFiltradas = $derived(tarefas.filter((tarefa) =>
 		normalizar(tarefa.titulo).includes(termo)
 		&& (status === '' || tarefa.status === status)
 		&& (prioridade === '' || tarefa.prioridade === prioridade)
 	));
+
+	function atualizarTarefa(tarefaAtualizada: Tarefa) {
+		tarefas = tarefas.map((tarefa) => tarefa.id === tarefaAtualizada.id ? tarefaAtualizada : tarefa);
+	}
 
 	function limparFiltros() {
 		busca = '';
@@ -43,9 +48,9 @@
 	<div class="acoes">
 		<p class="contador" role="status">
 			{#if filtrosAtivos}
-				{tarefasFiltradas.length} de {data.tarefas.length} {data.tarefas.length === 1 ? 'tarefa' : 'tarefas'}
+				{tarefasFiltradas.length} de {tarefas.length} {tarefas.length === 1 ? 'tarefa' : 'tarefas'}
 			{:else}
-				{data.tarefas.length} {data.tarefas.length === 1 ? 'tarefa' : 'tarefas'}
+				{tarefas.length} {tarefas.length === 1 ? 'tarefa' : 'tarefas'}
 			{/if}
 		</p>
 		<a class="nova-tarefa" href={resolve('/tarefas/nova')}>Nova tarefa</a>
@@ -81,7 +86,7 @@
 	</div>
 </fieldset>
 
-{#if data.tarefas.length === 0}
+{#if tarefas.length === 0}
 	<section class="vazia">
 		<h2>Nenhuma tarefa encontrada</h2>
 		<p>Quando houver tarefas cadastradas na API, elas aparecerão aqui.</p>
@@ -94,7 +99,7 @@
 {:else}
 	<ul class="grade" aria-label="Tarefas">
 		{#each tarefasFiltradas as tarefa (tarefa.id)}
-			<li><CartaoTarefa {tarefa} /></li>
+			<li><CartaoTarefa {tarefa} onStatusChange={atualizarTarefa} /></li>
 		{/each}
 	</ul>
 {/if}
