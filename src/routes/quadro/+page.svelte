@@ -1,5 +1,8 @@
 <script lang="ts">
+	import AlternarVisao from '#lib/componentes/AlternarVisao.svelte';
 	import CartaoTarefa from '#lib/componentes/CartaoTarefa.svelte';
+	import FiltrosTarefas from '#lib/componentes/FiltrosTarefas.svelte';
+	import { filtrarTarefas, filtrosAtivos } from '#lib/filtros.svelte.ts';
 	import { rotuloStatus } from '#lib/rotulos.ts';
 	import type { Status, Tarefa } from '../../tipos';
 	import type { PageProps } from './$types';
@@ -7,9 +10,10 @@
 	let { data }: PageProps = $props();
 	let tarefas = $state(data.tarefas);
 	const colunas = Object.entries(rotuloStatus) as [Status, string][];
+	const tarefasFiltradas = $derived(filtrarTarefas(tarefas));
 	const tarefasPorStatus = $derived(
 		Object.fromEntries(
-			colunas.map(([status]) => [status, tarefas.filter((tarefa) => tarefa.status === status)])
+			colunas.map(([status]) => [status, tarefasFiltradas.filter((tarefa) => tarefa.status === status)])
 		) as Record<Status, Tarefa[]>
 	);
 
@@ -29,17 +33,33 @@
 		<h1>Quadro de tarefas</h1>
 		<p class="introducao">Acompanhe as tarefas agrupadas por status.</p>
 	</div>
-	<p class="contador" role="status">{tarefas.length} {tarefas.length === 1 ? 'tarefa' : 'tarefas'}</p>
+	<div class="acoes">
+		<p class="contador" role="status">
+			{#if filtrosAtivos()}
+				{tarefasFiltradas.length} de {tarefas.length} {tarefas.length === 1 ? 'tarefa' : 'tarefas'}
+			{:else}
+				{tarefas.length} {tarefas.length === 1 ? 'tarefa' : 'tarefas'}
+			{/if}
+		</p>
+		<AlternarVisao atual="quadro" />
+	</div>
 </header>
+
+<FiltrosTarefas />
 
 {#if tarefas.length === 0}
 	<section class="vazia">
 		<h2>Nenhuma tarefa encontrada</h2>
 		<p>Quando houver tarefas cadastradas na API, elas aparecerão aqui.</p>
 	</section>
+{:else if tarefasFiltradas.length === 0}
+	<section class="vazia">
+		<h2>Nenhuma tarefa corresponde aos filtros</h2>
+		<p>Altere a busca, o status ou a prioridade, ou use “Limpar filtros” para ver todas as tarefas.</p>
+	</section>
 {/if}
 
-	<div class="rolagem-quadro" tabindex="0" aria-label="Quadro de tarefas. Role horizontalmente para ver todas as colunas.">
+	<div class="rolagem-quadro" role="region" tabindex="0" aria-label="Quadro de tarefas. Role horizontalmente para ver todas as colunas.">
 		<div class="quadro">
 			{#each colunas as [status, rotulo]}
 				<section class="coluna" aria-labelledby={"coluna-" + status}>
@@ -68,6 +88,8 @@
 	.sobretitulo { margin: 0 0 .5rem; color: #2563eb; font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
 	h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.04em; }
 	.introducao { margin: .65rem 0 0; color: #64748b; line-height: 1.6; }
+	.acoes { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; }
+	.vazia + .rolagem-quadro { margin-top: 1rem; }
 	.contador { flex-shrink: 0; margin: 0; padding: .5rem .8rem; border-radius: 999px; background: #e2e8f0; color: #334155; font-weight: 650; font-size: .9rem; }
 	.rolagem-quadro { overflow-x: auto; padding: .25rem .1rem 1rem; }
 	.rolagem-quadro:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
