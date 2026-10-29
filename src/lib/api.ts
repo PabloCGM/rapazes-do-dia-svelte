@@ -1,6 +1,7 @@
 import type { NovaTarefa, Projeto, Tarefa } from '../tipos';
 
-export const API = 'http://localhost:3000';
+/** Endereço da API: `VITE_API_URL` quando publicada; o json-server local no desenvolvimento. */
+export const API: string = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 /** Projeto com as tarefas embutidas (`GET /projetos/:id?_embed=tarefas`). */
 export type ProjetoComTarefas = Projeto & { tarefas: Tarefa[] };
